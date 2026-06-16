@@ -13,7 +13,9 @@ from app.delivery_agents.utils import (
     is_valid_status_transition,
     get_active_agent,
 )
+from app.models.user import User
 from app.notifications.service import NotificationService
+from app.notifications.email_service import send_shipment_delivered_email
 
 
 class AgentService:
@@ -101,6 +103,11 @@ class AgentService:
         )
         self.notification_service.notify_shipment_status_changed(shipment, new_status)
         db.session.commit()
+
+        if new_status == Shipment.STATUS_DELIVERED:
+            customer = User.query.get(shipment.customer_id)
+            if customer:
+                send_shipment_delivered_email(customer, shipment)
 
         return shipment.to_dict(include_history=True)
 

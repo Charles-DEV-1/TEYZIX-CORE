@@ -106,11 +106,12 @@ def create_app(config_name='development'):
 
     # Initialize extensions (import inside factory to avoid import-time failures)
     try:
-        from app.extensions import db, jwt, bcrypt, redis_client
+        from app.extensions import db, jwt, bcrypt, mail, redis_client
     except Exception:
         db = None
         jwt = None
         bcrypt = None
+        mail = None
         redis_client = None
 
     if db is not None:
@@ -124,6 +125,9 @@ def create_app(config_name='development'):
 
     if jwt is not None:
         jwt.init_app(app)
+
+    if mail is not None:
+        mail.init_app(app)
 
     # Initialize Flask-Migrate using shared migrate instance
     try:

@@ -23,5 +23,6 @@ WHAT NOT TO PUT HERE:
 from .routes import notifications_bp
 from .service import NotificationService
 from . import utils
+from . import email_service
 
-__all__ = ['notifications_bp', 'NotificationService', 'utils']
+__all__ = ['notifications_bp', 'NotificationService', 'utils', 'email_service']

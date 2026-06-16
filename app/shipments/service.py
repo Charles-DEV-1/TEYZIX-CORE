@@ -33,7 +33,9 @@ from app.shipments.utils import (
     is_valid_status_transition,
 )
 from app.warehouses.utils import can_accept_load
+from app.models.user import User
 from app.notifications.service import NotificationService
+from app.notifications.email_service import send_shipment_created_email
 
 
 class ShipmentService:
@@ -125,6 +127,10 @@ class ShipmentService:
         if assigned_agent_id:
             self.notification_service.notify_shipment_assigned(shipment, assigned_agent_id)
         db.session.commit()
+
+        customer = User.query.get(customer_id)
+        if customer:
+            send_shipment_created_email(customer, shipment)
 
         return shipment.to_dict(include_history=True)
 

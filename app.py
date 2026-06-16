@@ -20,7 +20,10 @@ TODO - Implementation:
 """
 
 import os
+from dotenv import load_dotenv
 from app import create_app
+
+load_dotenv()
 
 config_name = 'production' if os.getenv('FLASK_ENV') == 'production' else 'development'
 app = create_app(config_name)
@@ -28,3 +31,7 @@ app = create_app(config_name)
 if __name__ == '__main__':
     # Run development server
     app.run(debug=True, host='0.0.0.0', port=5000)
+    print("MAIL_USERNAME =", app.config.get("MAIL_USERNAME"))
+    print("MAIL_PASSWORD =", app.config.get("MAIL_PASSWORD"))
+    print("MAIL_SERVER =", app.config.get("MAIL_SERVER"))
+    print("MAIL_PORT =", app.config.get("MAIL_PORT"))

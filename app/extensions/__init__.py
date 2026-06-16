@@ -23,6 +23,7 @@ WHAT NOT TO PUT HERE:
 from .db import db
 from .jwt import jwt
 from .bcrypt import bcrypt
+from .mail import mail
 try:
     from .redis import redis_client
 except Exception:
@@ -31,4 +32,4 @@ from flask_migrate import Migrate
 
 migrate = Migrate()
 
-__all__ = ['db', 'jwt', 'bcrypt', 'redis_client', 'migrate']
+__all__ = ['db', 'jwt', 'bcrypt', 'mail', 'redis_client', 'migrate']

@@ -24,6 +24,7 @@ from app.auth.utils import (
     generate_access_token,
     generate_reset_token,
 )
+from app.notifications.email_service import send_password_reset_email
 
 
 def _redis():
@@ -151,6 +152,8 @@ class AuthService:
 
         db.session.add(reset_record)
         db.session.commit()
+
+        send_password_reset_email(user, token)
 
         return {
             'message': 'Password reset token created',

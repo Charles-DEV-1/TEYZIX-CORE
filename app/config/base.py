@@ -44,3 +44,10 @@ class Config:
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
     REQUIRE_REDIS = False
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', 'ozebocharles@gmail.com')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', 'oagprbktpdirvbvm')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER') or os.getenv('MAIL_USERNAME')
