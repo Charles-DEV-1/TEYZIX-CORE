@@ -37,7 +37,9 @@ def _send_email(recipient, subject, html_body):
             html=html_body,
             sender=current_app.config.get('MAIL_DEFAULT_SENDER'),
         )
-        mail.send(message)
+        from threading import Thread
+
+        Thread(target=lambda: mail.send(message)).start()
         logger.info('Email sent to %s with subject: %s', recipient, subject)
         return True
     except Exception as exc:
