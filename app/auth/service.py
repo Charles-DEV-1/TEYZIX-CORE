@@ -153,7 +153,10 @@ class AuthService:
         db.session.add(reset_record)
         db.session.commit()
 
-        send_password_reset_email(user, token)
+        try:
+            send_password_reset_email(user, token)
+        except Exception as e:
+            current_app.logger.error(f"Email failed: {e}")
 
         return {
             'message': 'Password reset token created',
