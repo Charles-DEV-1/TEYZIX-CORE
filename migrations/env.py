@@ -2,7 +2,6 @@ import logging
 from logging.config import fileConfig
 
 from flask import current_app
-import app.models  # noqa: F401
 
 from alembic import context
 

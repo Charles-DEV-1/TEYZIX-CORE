@@ -1,8 +1,8 @@
-"""create all tables
+"""initial clean schema
 
-Revision ID: 865257416bfb
-Revises: fec61226dcfa
-Create Date: 2026-06-14 13:15:39.597324
+Revision ID: b5ba2120d42d
+Revises: 
+Create Date: 2026-06-18 20:36:57.312059
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '865257416bfb'
-down_revision = 'fec61226dcfa'
+revision = 'b5ba2120d42d'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -33,7 +33,7 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_users_email'), ['email'], unique=True)
         batch_op.create_index(batch_op.f('ix_users_is_active'), ['is_active'], unique=False)
         batch_op.create_index(batch_op.f('ix_users_name'), ['name'], unique=False)
-        batch_op.create_index('ix_users_role', ['role'], unique=False)
+        batch_op.create_index(batch_op.f('ix_users_role'), ['role'], unique=False)
 
     op.create_table('warehouses',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -46,7 +46,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('warehouses', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_warehouses_location'), ['location'], unique=False)
+        batch_op.create_index('ix_warehouses_location', ['location'], unique=False)
         batch_op.create_index('ix_warehouses_name', ['name'], unique=False)
 
     op.create_table('password_reset_tokens',
@@ -60,7 +60,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('password_reset_tokens', schema=None) as batch_op:
-        batch_op.create_index('ix_password_reset_tokens_token', ['token'], unique=False)
+        batch_op.create_index(batch_op.f('ix_password_reset_tokens_token'), ['token'], unique=True)
         batch_op.create_index(batch_op.f('ix_password_reset_tokens_user_id'), ['user_id'], unique=False)
 
     op.create_table('refresh_tokens',
@@ -73,8 +73,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('refresh_tokens', schema=None) as batch_op:
-        batch_op.create_index('ix_refresh_tokens_token_jti', ['token_jti'], unique=False)
-        batch_op.create_index('ix_refresh_tokens_user_id', ['user_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_refresh_tokens_token_jti'), ['token_jti'], unique=True)
+        batch_op.create_index(batch_op.f('ix_refresh_tokens_user_id'), ['user_id'], unique=False)
 
     op.create_table('shipments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -98,12 +98,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('shipments', schema=None) as batch_op:
-        batch_op.create_index('ix_shipments_agent_id', ['agent_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_shipments_agent_id'), ['agent_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_shipments_created_at'), ['created_at'], unique=False)
-        batch_op.create_index('ix_shipments_customer_id', ['customer_id'], unique=False)
-        batch_op.create_index('ix_shipments_status', ['status'], unique=False)
+        batch_op.create_index(batch_op.f('ix_shipments_customer_id'), ['customer_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_shipments_status'), ['status'], unique=False)
         batch_op.create_index(batch_op.f('ix_shipments_tracking_id'), ['tracking_id'], unique=True)
-        batch_op.create_index('ix_shipments_warehouse_id', ['warehouse_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_shipments_warehouse_id'), ['warehouse_id'], unique=False)
 
     op.create_table('delivery_proofs',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -115,7 +115,7 @@ def upgrade():
     )
     with op.batch_alter_table('delivery_proofs', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_delivery_proofs_created_at'), ['created_at'], unique=False)
-        batch_op.create_index('ix_delivery_proofs_shipment_id', ['shipment_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_delivery_proofs_shipment_id'), ['shipment_id'], unique=False)
 
     op.create_table('notifications',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -129,10 +129,10 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('notifications', schema=None) as batch_op:
-        batch_op.create_index('ix_notifications_created_at', ['created_at'], unique=False)
+        batch_op.create_index(batch_op.f('ix_notifications_created_at'), ['created_at'], unique=False)
         batch_op.create_index('ix_notifications_is_read', ['is_read'], unique=False)
         batch_op.create_index(batch_op.f('ix_notifications_shipment_id'), ['shipment_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_notifications_user_id'), ['user_id'], unique=False)
+        batch_op.create_index('ix_notifications_user_id', ['user_id'], unique=False)
 
     op.create_table('tracking_history',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -167,43 +167,43 @@ def downgrade():
 
     op.drop_table('tracking_history')
     with op.batch_alter_table('notifications', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_notifications_user_id'))
+        batch_op.drop_index('ix_notifications_user_id')
         batch_op.drop_index(batch_op.f('ix_notifications_shipment_id'))
         batch_op.drop_index('ix_notifications_is_read')
-        batch_op.drop_index('ix_notifications_created_at')
+        batch_op.drop_index(batch_op.f('ix_notifications_created_at'))
 
     op.drop_table('notifications')
     with op.batch_alter_table('delivery_proofs', schema=None) as batch_op:
-        batch_op.drop_index('ix_delivery_proofs_shipment_id')
+        batch_op.drop_index(batch_op.f('ix_delivery_proofs_shipment_id'))
         batch_op.drop_index(batch_op.f('ix_delivery_proofs_created_at'))
 
     op.drop_table('delivery_proofs')
     with op.batch_alter_table('shipments', schema=None) as batch_op:
-        batch_op.drop_index('ix_shipments_warehouse_id')
+        batch_op.drop_index(batch_op.f('ix_shipments_warehouse_id'))
         batch_op.drop_index(batch_op.f('ix_shipments_tracking_id'))
-        batch_op.drop_index('ix_shipments_status')
-        batch_op.drop_index('ix_shipments_customer_id')
+        batch_op.drop_index(batch_op.f('ix_shipments_status'))
+        batch_op.drop_index(batch_op.f('ix_shipments_customer_id'))
         batch_op.drop_index(batch_op.f('ix_shipments_created_at'))
-        batch_op.drop_index('ix_shipments_agent_id')
+        batch_op.drop_index(batch_op.f('ix_shipments_agent_id'))
 
     op.drop_table('shipments')
     with op.batch_alter_table('refresh_tokens', schema=None) as batch_op:
-        batch_op.drop_index('ix_refresh_tokens_user_id')
-        batch_op.drop_index('ix_refresh_tokens_token_jti')
+        batch_op.drop_index(batch_op.f('ix_refresh_tokens_user_id'))
+        batch_op.drop_index(batch_op.f('ix_refresh_tokens_token_jti'))
 
     op.drop_table('refresh_tokens')
     with op.batch_alter_table('password_reset_tokens', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_password_reset_tokens_user_id'))
-        batch_op.drop_index('ix_password_reset_tokens_token')
+        batch_op.drop_index(batch_op.f('ix_password_reset_tokens_token'))
 
     op.drop_table('password_reset_tokens')
     with op.batch_alter_table('warehouses', schema=None) as batch_op:
         batch_op.drop_index('ix_warehouses_name')
-        batch_op.drop_index(batch_op.f('ix_warehouses_location'))
+        batch_op.drop_index('ix_warehouses_location')
 
     op.drop_table('warehouses')
     with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_index('ix_users_role')
+        batch_op.drop_index(batch_op.f('ix_users_role'))
         batch_op.drop_index(batch_op.f('ix_users_name'))
         batch_op.drop_index(batch_op.f('ix_users_is_active'))
         batch_op.drop_index(batch_op.f('ix_users_email'))
