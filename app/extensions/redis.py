@@ -71,7 +71,7 @@ def init_redis(require_connection=False, redis_url=None):
 
 
 def _auto_init():
-    require = os.getenv('FLASK_ENV', 'development') == 'production'
+    require = os.getenv("REDIS_REQUIRED", "false").lower() == "true"
     init_redis(require_connection=require)
 
 

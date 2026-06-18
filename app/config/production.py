@@ -17,7 +17,7 @@ class ProductionConfig(Config):
         'postgresql://postgres:password@localhost:5432/logistics_db'
     )
 
-    REQUIRE_REDIS = True
+    REQUIRE_REDIS = False
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'WARNING')
 
     SESSION_COOKIE_SECURE = True
